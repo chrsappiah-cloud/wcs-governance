@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient, getServerSupabase } from "@/lib/supabase/server";
+import { isFirebaseConfigured } from "@/lib/firebase/admin";
+import { getFirebaseBackupStatus } from "@/lib/firebase/backup";
 import {
   ALL_STATIC_UNITS,
   type StaticUnit,
@@ -228,6 +230,42 @@ export async function runDiagnostics(): Promise<DiagnosticsReport> {
       status: founderCount > 0 ? "pass" : "warn",
       detail: founderCount ? `${founderCount} founder_admin on org-global` : "none — run seed-founder.sql after sign-up",
     });
+  }
+
+  // --- Firebase backup ---
+  const fbConfigured = isFirebaseConfigured();
+  results.push({
+    id: "firebase-configured",
+    layer: "backend",
+    name: "Firebase service account",
+    path: "FIREBASE_SERVICE_ACCOUNT_JSON",
+    status: fbConfigured ? "pass" : "warn",
+    detail: fbConfigured ? "configured" : "not set — backup sync disabled",
+  });
+
+  if (fbConfigured) {
+    try {
+      const fbStatus = await getFirebaseBackupStatus();
+      results.push({
+        id: "firebase-backup-status",
+        layer: "backend",
+        name: "Firestore backup",
+        path: "governance/*",
+        status: fbStatus.available ? "pass" : "fail",
+        detail: fbStatus.last_backup_at
+          ? `last backup ${fbStatus.last_backup_at} (${fbStatus.last_snapshot_id})`
+          : "no backup run yet — npm run backup:firebase",
+      });
+    } catch (e) {
+      results.push({
+        id: "firebase-backup-status",
+        layer: "backend",
+        name: "Firestore backup",
+        path: "governance/*",
+        status: "fail",
+        detail: e instanceof Error ? e.message : "unavailable",
+      });
+    }
   }
 
   // --- Static registry (code present) ---

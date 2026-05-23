@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { backupAuditLogMirror } from "@/lib/firebase/backup";
 
 type AuditInput = {
   action: string;
@@ -21,6 +22,11 @@ export async function logAction(supabase: SupabaseClient, input: AuditInput) {
 
   if (error) {
     console.error("audit log failed:", error.message);
+  } else {
+    backupAuditLogMirror({
+      ...input,
+      supabaseId: data ?? undefined,
+    }).catch((err) => console.error("firebase audit mirror failed:", err));
   }
 
   return data;

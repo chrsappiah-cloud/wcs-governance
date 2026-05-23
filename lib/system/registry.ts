@@ -48,6 +48,7 @@ export const BACKEND_ROUTES: StaticUnit[] = [
   { id: "api-audit", layer: "backend", name: "Audit API", path: "/api/audit", description: "Audit log JSON" },
   { id: "api-rd-evidence", layer: "backend", name: "R&D evidence API", path: "/api/rd-evidence", description: "GET/POST evidence records" },
   { id: "api-export-rd", layer: "backend", name: "Export R&D pack", path: "/api/export-rd-pack", description: "POST evidence pack JSON" },
+  { id: "api-firebase-backup", layer: "backend", name: "Firebase backup", path: "/api/backup/firebase", description: "GET status / POST Supabase→Firestore sync" },
 ];
 
 export const DATABASE_TABLES: StaticUnit[] = [

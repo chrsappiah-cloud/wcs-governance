@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Backup data — server-only via Admin SDK; client read denied
+    match /governance/{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
