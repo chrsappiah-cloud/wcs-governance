@@ -52,10 +52,29 @@ where s.key = 'etherealveil-rd-2026';
 Use the console API route:
 
 ```bash
-curl -X POST /api/export-rd-pack \
+curl -X POST https://your-console.vercel.app/api/export-rd-pack \
+  -H "Content-Type: application/json" \
   -H "Cookie: ..." \
-  -d '{"scopeKey":"wcs-platform-rd-2026","since":"2026-04-01"}'
+  -d '{"scope_key":"wcs-platform-rd-2026","since":"2026-04-01"}'
 ```
+
+Create evidence via API:
+
+```bash
+curl -X POST https://your-console.vercel.app/api/rd-evidence \
+  -H "Content-Type: application/json" \
+  -H "Cookie: ..." \
+  -d '{
+    "rd_project_id": 1,
+    "evidence_type": "experiment",
+    "title": "Adaptive pacing A/B — session 12",
+    "summary": "Hypothesis: slower reveal reduces cognitive load.",
+    "linked_commit": "abc123",
+    "linked_build": "1.2.0"
+  }'
+```
+
+Or use the **Log evidence** form on `/rd-projects` (server action → RLS + audit trigger).
 
 Or SQL:
 

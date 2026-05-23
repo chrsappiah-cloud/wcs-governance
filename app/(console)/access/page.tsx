@@ -8,7 +8,7 @@ export default async function AccessPage() {
   return (
     <section>
       <h1 className="text-2xl font-semibold mb-4">Access Control</h1>
-      <p>Assign roles and scopes to staff and contractors.</p>
+      <p>Assign roles and scopes to staff, engineers, and contractors.</p>
       <div className="panel" style={{ marginTop: "1rem" }}>
         <table className="table">
           <thead>

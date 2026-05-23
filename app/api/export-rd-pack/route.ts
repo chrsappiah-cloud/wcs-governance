@@ -1,39 +1,42 @@
 import { NextResponse } from "next/server";
-import { requirePermission, ForbiddenError } from "@/lib/auth/requirePermission";
 import { logAction } from "@/lib/audit/log-action";
+import { requirePermission, ForbiddenError } from "@/lib/auth/requirePermission";
+import { buildEvidencePack } from "@/lib/rd/evidence-pack";
+import { getProjectsForScope } from "@/lib/rd/scope";
 
 export async function POST(request: Request) {
   try {
-    const { supabase } = await requirePermission("export_evidence_pack", "org-global");
     const body = await request.json();
-    const scopeKey = body.scope_key ?? "etherealveil-rd-2026";
+    const scopeKey = body.scope_key ?? body.scopeKey ?? "wcs-platform-rd-2026";
+    const since = body.since ?? null;
 
-    const { data: projects, error: pErr } = await supabase
-      .from("rd_projects")
-      .select("*, resource_scopes(key, label)");
+    const { supabase } = await requirePermission("export_evidence_pack", scopeKey);
 
-    if (pErr) return NextResponse.json({ error: pErr.message }, { status: 500 });
+    const projects = await getProjectsForScope(supabase, scopeKey);
+    const ids = projects.map((p) => p.id);
 
-    const filtered = (projects ?? []).filter(
-      (p: { resource_scopes?: { key?: string } }) => p.resource_scopes?.key === scopeKey
-    );
-    const ids = filtered.map((p: { id: number }) => p.id);
-
-    const { data: evidence, error: eErr } = await supabase
+    const { data: evidence, error } = await supabase
       .from("rd_evidence_records")
-      .select("*")
-      .in("rd_project_id", ids.length ? ids : [-1]);
+      .select(
+        "id, rd_project_id, evidence_type, title, summary, linked_commit, linked_build, linked_cost_ref, recorded_at"
+      )
+      .in("rd_project_id", ids.length ? ids : [-1])
+      .order("recorded_at", { ascending: false });
 
-    if (eErr) return NextResponse.json({ error: eErr.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    const pack = { generated_at: new Date().toISOString(), scope_key: scopeKey, projects: filtered, evidence };
+    const pack = buildEvidencePack(scopeKey, projects, evidence ?? [], since);
 
     await logAction(supabase, {
       action: "export_evidence_pack",
       entityType: "rd_projects",
       entityId: scopeKey,
       scopeKey,
-      afterState: { project_count: filtered.length, evidence_count: evidence?.length ?? 0 },
+      afterState: {
+        since,
+        project_count: projects.length,
+        evidence_count: pack.evidence.length,
+      },
     });
 
     return NextResponse.json({ pack });
