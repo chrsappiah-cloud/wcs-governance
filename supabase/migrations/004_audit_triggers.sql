@@ -46,14 +46,17 @@ begin
 end;
 $$;
 
+drop trigger if exists audit_user_role_assignments on public.user_role_assignments;
 create trigger audit_user_role_assignments
   after insert or update or delete on public.user_role_assignments
   for each row execute function public.audit_trigger();
 
+drop trigger if exists audit_approval_requests on public.approval_requests;
 create trigger audit_approval_requests
   after insert or update or delete on public.approval_requests
   for each row execute function public.audit_trigger();
 
+drop trigger if exists audit_rd_evidence_records on public.rd_evidence_records;
 create trigger audit_rd_evidence_records
   after insert or update or delete on public.rd_evidence_records
   for each row execute function public.audit_trigger();

@@ -1,26 +1,21 @@
 -- Founder bootstrap for existing Supabase auth user
--- Replace email if needed, then run in SQL editor (service role).
+-- Replace YOUR_FOUNDER_EMAIL, then run in SQL editor (service role).
 
-insert into public.profiles (id, email, full_name, status)
-select id, email, 'Dr Christopher Appiah-Thompson', 'active'
+insert into public.profiles (id, email, full_name)
+select id, email, 'Founder'
 from auth.users
-where email = 'chrsappiah@gmail.com'
-on conflict (id) do update
-  set email = excluded.email,
-      full_name = excluded.full_name,
-      status = 'active';
+where email = 'YOUR_FOUNDER_EMAIL'
+on conflict (id) do update set email = excluded.email;
 
-insert into public.user_role_assignments (user_id, role_id, scope_id, assigned_by)
-select p.id, r.id, s.id, p.id
-from public.profiles p
-cross join public.roles r
-cross join public.resource_scopes s
-where p.email = 'chrsappiah@gmail.com'
+insert into public.user_role_assignments (user_id, role_id, scope_id)
+select p.id, r.id, s.id
+from public.profiles p,
+     public.roles r,
+     public.resource_scopes s
+where p.email = 'YOUR_FOUNDER_EMAIL'
   and r.key = 'founder_admin'
   and s.key = 'org-global'
-on conflict (user_id, role_id, scope_id) do nothing;
+on conflict do nothing;
 
--- Example delegated staff (uncomment and set UUIDs after creating auth users):
--- select public.assign_role_for_scope('<uuid>', 'content_manager', 'website-main', '<founder-uuid>');
--- select public.assign_role_for_scope('<uuid>', 'engineer', 'etherealveil-rd-2026', '<founder-uuid>');
--- select public.assign_role_for_scope('<uuid>', 'rd_coordinator', 'etherealveil-rd-2026', '<founder-uuid>');
+-- WCS founder (uncomment and use after sign-up):
+-- where p.email = 'chrsappiah@gmail.com'

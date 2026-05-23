@@ -1,4 +1,4 @@
-import { requireStaff } from "@/lib/auth/require-staff";
+import { requireStaff } from "@/lib/auth/requireStaff";
 
 export default async function SettingsPage() {
   const { user, claims } = await requireStaff();

@@ -1,11 +1,12 @@
-import { createClient as createServerSupabaseClient } from "@/lib/supabase/server";
+import { getServerSupabase } from "@/lib/supabase/server";
 
+/** @deprecated Use getServerSupabase from @/lib/supabase/server */
 export async function getSessionClient() {
-  return createServerSupabaseClient();
+  return getServerSupabase();
 }
 
 export async function getSession() {
-  const supabase = await getSessionClient();
+  const supabase = await getServerSupabase();
   const { data } = await supabase.auth.getUser();
   const user = data.user;
   if (!user) return null;

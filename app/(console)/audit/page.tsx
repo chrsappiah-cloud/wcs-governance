@@ -1,4 +1,4 @@
-import { requirePermission, ForbiddenError } from "@/lib/auth/require-permission";
+import { requirePermission, ForbiddenError } from "@/lib/auth/requirePermission";
 import { getAuditLogs } from "@/lib/db/queries";
 
 export default async function AuditPage() {
@@ -16,7 +16,7 @@ export default async function AuditPage() {
 
   return (
     <section>
-      <h1>Audit</h1>
+      <h1 className="text-2xl font-semibold mb-4">Audit</h1>
       <p className="muted">Application audit trail. Auth events remain in Supabase Auth logs.</p>
       <div className="panel" style={{ marginTop: "1rem" }}>
         <table className="table">

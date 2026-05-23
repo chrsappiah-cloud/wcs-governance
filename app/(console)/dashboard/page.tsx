@@ -1,17 +1,15 @@
-import { requireStaff } from "@/lib/auth/require-staff";
+import { requireStaff } from "@/lib/auth/requireStaff";
 import { getPendingApprovalsCount, getRdProjects } from "@/lib/db/queries";
 
 export default async function DashboardPage() {
-  const { supabase, claims } = await requireStaff();
+  const { supabase, user } = await requireStaff();
   const pending = await getPendingApprovalsCount(supabase);
   const projects = await getRdProjects(supabase);
 
   return (
     <section>
-      <h1>Dashboard</h1>
-      <p className="muted">
-        Founder-controlled operating system — {String(claims.org_role ?? "staff")}
-      </p>
+      <h1 className="text-2xl font-semibold mb-4">Governance Dashboard</h1>
+      <p>Welcome, {user.email}</p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
         <div className="panel">
           <strong>{pending.count ?? 0}</strong>

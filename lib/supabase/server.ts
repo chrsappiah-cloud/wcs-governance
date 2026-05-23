@@ -1,7 +1,7 @@
-import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
-export async function createClient() {
+export async function getServerSupabase() {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -18,7 +18,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Called from Server Component — session refresh handled in middleware.
+            // Server Component — middleware refreshes session cookies.
           }
         },
       },
@@ -26,7 +26,9 @@ export async function createClient() {
   );
 }
 
-/** Service role client — server-only, never import in client components. */
+/** @deprecated Use getServerSupabase() */
+export const createClient = getServerSupabase;
+
 export async function createServiceClient() {
   const { createClient: createSupabaseClient } = await import("@supabase/supabase-js");
   return createSupabaseClient(

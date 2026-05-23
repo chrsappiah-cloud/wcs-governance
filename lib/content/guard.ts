@@ -1,4 +1,4 @@
-import { requirePermission } from "@/lib/auth/require-permission";
+import { requirePermission } from "@/lib/auth/requirePermission";
 
 /** Wrap existing CMS / content mutations — call before any website-main write. */
 export async function requirePublishContent() {

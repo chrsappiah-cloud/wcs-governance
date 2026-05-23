@@ -1,33 +1,35 @@
--- Roles, permissions, scopes, and least-privilege mappings
+-- Seed roles, permissions, scopes, role-permission map (idempotent)
 
 insert into public.roles (key, name, description) values
   ('founder_admin', 'Founder Admin', 'Ultimate owner and override authority'),
-  ('platform_admin', 'Platform Admin', 'Infrastructure, deployment, and security administration'),
-  ('product_manager', 'Product Manager', 'Roadmap, workflow, and release coordination'),
-  ('content_manager', 'Content Manager', 'Website announcements, media, and copy management'),
-  ('ios_release_manager', 'iOS Release Manager', 'App release and App Store operational management'),
-  ('rd_coordinator', 'R&D Coordinator', 'Experimental records and evidence quality oversight'),
+  ('platform_admin', 'Platform Admin', 'Infrastructure, deployment, security'),
+  ('product_manager', 'Product Manager', 'Roadmap and release coordination'),
+  ('content_manager', 'Content Manager', 'Website announcements and content'),
+  ('ios_release_manager', 'iOS Release Manager', 'App release operations'),
+  ('rd_coordinator', 'R&D Coordinator', 'R&D evidence oversight'),
   ('finance_grants_manager', 'Finance & Grants Manager', 'Grant reporting and expenditure mapping'),
-  ('support_lead', 'Support Lead', 'Support and quality workflows'),
+  ('support_lead', 'Support Lead', 'Support and incident workflows'),
   ('engineer', 'Engineer', 'Product and system development'),
-  ('contractor', 'Contractor', 'Scoped external contributor');
+  ('contractor', 'Contractor', 'Scoped external contributor')
+on conflict (key) do nothing;
 
 insert into public.permissions (key, description) values
   ('manage_access', 'Assign and revoke roles and scopes'),
-  ('manage_domains', 'Manage domain registrar and DNS level settings'),
+  ('manage_domains', 'Manage domain/DNS'),
   ('manage_billing', 'Manage billing and owner-level commercial settings'),
   ('publish_content', 'Create and publish website content'),
   ('edit_ui_copy', 'Edit user-facing product and website copy'),
   ('manage_media', 'Upload and organize media assets'),
   ('manage_release', 'Prepare release operations and metadata'),
-  ('approve_release', 'Approve release to production or store submission'),
+  ('approve_release', 'Approve release to production or App Store'),
   ('view_finance', 'View finance and grant records'),
   ('approve_grant_report', 'Approve milestone and acquittal reporting'),
   ('create_rd_record', 'Create experimental evidence entries'),
   ('approve_rd_record', 'Approve curated R&D evidence records'),
   ('export_evidence_pack', 'Export structured evidence packages'),
   ('view_audit_logs', 'View audit and governance logs'),
-  ('manage_support_cases', 'Manage support and issue workflows');
+  ('manage_support_cases', 'Manage support and issue workflows')
+on conflict (key) do nothing;
 
 insert into public.resource_scopes (key, kind, label) values
   ('org-global', 'org', 'World Class Scholars Global'),
@@ -38,12 +40,14 @@ insert into public.resource_scopes (key, kind, label) values
   ('etherealveil-rd-2026', 'rd_project', 'EtherealVeil R&D 2026'),
   ('grant-rd-funding-2026', 'grant', 'R&D Funding 2026'),
   ('production', 'environment', 'Production Environment'),
-  ('staging', 'environment', 'Staging Environment');
+  ('staging', 'environment', 'Staging Environment')
+on conflict (key) do nothing;
 
 insert into public.role_permissions (role_id, permission_id)
 select r.id, p.id
 from public.roles r
-join public.permissions p on (
+join public.permissions p on true
+where
   (r.key = 'founder_admin')
   or (r.key = 'platform_admin' and p.key in ('manage_release', 'approve_release', 'view_audit_logs'))
   or (r.key = 'content_manager' and p.key in ('publish_content', 'edit_ui_copy', 'manage_media'))
@@ -53,17 +57,8 @@ join public.permissions p on (
   or (r.key = 'support_lead' and p.key in ('manage_support_cases'))
   or (r.key = 'engineer' and p.key in ('create_rd_record', 'manage_release'))
   or (r.key = 'product_manager' and p.key in ('manage_release', 'publish_content'))
-);
-
--- Founder gets manage_access explicitly (not in cross-join above)
-insert into public.role_permissions (role_id, permission_id)
-select r.id, p.id
-from public.roles r
-join public.permissions p on p.key = 'manage_access'
-where r.key = 'founder_admin'
 on conflict do nothing;
 
--- Demo R&D projects
 insert into public.rd_projects (scope_id, title, technical_uncertainty, objective, status)
 select s.id,
   'EtherealVeil adaptive interface R&D',

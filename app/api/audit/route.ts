@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requirePermission, ForbiddenError } from "@/lib/auth/require-permission";
+import { requirePermission, ForbiddenError } from "@/lib/auth/requirePermission";
 import { getAuditLogs } from "@/lib/db/queries";
 
 export async function GET(request: Request) {

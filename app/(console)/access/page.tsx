@@ -1,4 +1,4 @@
-import { requirePermission } from "@/lib/auth/require-permission";
+import { requirePermission } from "@/lib/auth/requirePermission";
 import { getRoleAssignments } from "@/lib/db/queries";
 
 export default async function AccessPage() {
@@ -7,8 +7,8 @@ export default async function AccessPage() {
 
   return (
     <section>
-      <h1>Access Control</h1>
-      <p className="muted">Manage role assignments, scope access, and quarterly reviews.</p>
+      <h1 className="text-2xl font-semibold mb-4">Access Control</h1>
+      <p>Assign roles and scopes to staff and contractors.</p>
       <div className="panel" style={{ marginTop: "1rem" }}>
         <table className="table">
           <thead>

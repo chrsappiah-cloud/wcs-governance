@@ -1,4 +1,4 @@
-import { requirePermission } from "@/lib/auth/require-permission";
+import { requirePermission } from "@/lib/auth/requirePermission";
 
 export default async function IosReleasesPage() {
   await requirePermission("manage_release", "etherealveil-ios");

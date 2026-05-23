@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requirePermission, ForbiddenError } from "@/lib/auth/require-permission";
+import { requirePermission, ForbiddenError } from "@/lib/auth/requirePermission";
 import { logAction } from "@/lib/audit/log-action";
 
 export async function POST(request: Request) {

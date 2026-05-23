@@ -1,8 +1,8 @@
--- World Class Scholars — core governance schema
+-- World Class Scholars — core governance schema (idempotent)
 
 create extension if not exists pgcrypto;
 
-create table public.profiles (
+create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   email text unique,
   full_name text,
@@ -10,26 +10,26 @@ create table public.profiles (
   created_at timestamptz not null default now()
 );
 
-create table public.roles (
+create table if not exists public.roles (
   id bigserial primary key,
   key text unique not null,
   name text not null,
   description text
 );
 
-create table public.permissions (
+create table if not exists public.permissions (
   id bigserial primary key,
   key text unique not null,
   description text
 );
 
-create table public.role_permissions (
+create table if not exists public.role_permissions (
   role_id bigint not null references public.roles (id) on delete cascade,
   permission_id bigint not null references public.permissions (id) on delete cascade,
   primary key (role_id, permission_id)
 );
 
-create table public.resource_scopes (
+create table if not exists public.resource_scopes (
   id bigserial primary key,
   key text unique not null,
   kind text not null check (kind in ('org', 'website', 'ios_app', 'rd_project', 'grant', 'environment')),
@@ -37,7 +37,7 @@ create table public.resource_scopes (
   created_at timestamptz not null default now()
 );
 
-create table public.user_role_assignments (
+create table if not exists public.user_role_assignments (
   id bigserial primary key,
   user_id uuid not null references public.profiles (id) on delete cascade,
   role_id bigint not null references public.roles (id) on delete cascade,
@@ -47,7 +47,7 @@ create table public.user_role_assignments (
   unique (user_id, role_id, scope_id)
 );
 
-create table public.approval_requests (
+create table if not exists public.approval_requests (
   id bigserial primary key,
   request_type text not null,
   scope_id bigint references public.resource_scopes (id),
@@ -59,7 +59,7 @@ create table public.approval_requests (
   decided_at timestamptz
 );
 
-create table public.audit_logs (
+create table if not exists public.audit_logs (
   id bigserial primary key,
   actor_user_id uuid references public.profiles (id),
   action text not null,
@@ -71,7 +71,7 @@ create table public.audit_logs (
   created_at timestamptz not null default now()
 );
 
-create table public.rd_projects (
+create table if not exists public.rd_projects (
   id bigserial primary key,
   scope_id bigint unique not null references public.resource_scopes (id),
   title text not null,
@@ -81,7 +81,7 @@ create table public.rd_projects (
   created_at timestamptz not null default now()
 );
 
-create table public.rd_evidence_records (
+create table if not exists public.rd_evidence_records (
   id bigserial primary key,
   rd_project_id bigint not null references public.rd_projects (id) on delete cascade,
   evidence_type text not null check (
@@ -97,11 +97,10 @@ create table public.rd_evidence_records (
   payload jsonb not null default '{}'::jsonb
 );
 
-create index user_role_assignments_user_idx on public.user_role_assignments (user_id);
-create index audit_logs_created_idx on public.audit_logs (created_at desc);
-create index rd_evidence_project_idx on public.rd_evidence_records (rd_project_id);
+create index if not exists user_role_assignments_user_idx on public.user_role_assignments (user_id);
+create index if not exists audit_logs_created_idx on public.audit_logs (created_at desc);
+create index if not exists rd_evidence_project_idx on public.rd_evidence_records (rd_project_id);
 
--- Auto-create profile on sign-up
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -114,11 +113,13 @@ begin
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data ->> 'full_name', split_part(new.email, '@', 1))
-  );
+  )
+  on conflict (id) do update set email = excluded.email;
   return new;
 end;
 $$;
 
+drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
