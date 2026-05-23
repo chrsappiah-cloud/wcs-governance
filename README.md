@@ -27,11 +27,14 @@ open http://localhost:3000/system   # full diagnostics UI (after login)
 
 ## Quick start
 
+**Supabase project:** [World-Class-Scholars](https://supabase.com/dashboard/project/qbmheroqblpcbuqwnzlp) (`qbmheroqblpcbuqwnzlp`)
+
 ```bash
-cp .env.example .env.local   # set Supabase URL + keys
-npm install
-npm run verify:setup           # confirm schema + founder
-npm run dev                    # http://localhost:3000/login
+cp .env.example .env.local   # or use prefilled .env.local — add keys from dashboard
+# Unpause project if needed, then paste anon + service_role keys
+npm run go-live              # link + push migrations 001–004 + verify:setup
+npm run dev                  # sign up at /login, run seed-founder.sql, re-login
+open http://localhost:3000/system
 ```
 
 **Supabase dashboard (one-time):**

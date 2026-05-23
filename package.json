@@ -12,6 +12,7 @@
     "export:governance-pdf": "tsx scripts/export-markdown-pdf.ts governance",
     "prepare:pdf": "npx puppeteer browsers install chrome",
     "verify:setup": "tsx scripts/verify-setup.ts",
+    "go-live": "tsx scripts/go-live.ts",
     "test:unit": "node --import tsx --test tests/unit/*.test.ts",
     "test:stack": "tsx scripts/test-stack.ts",
     "test": "npm run test:unit && npm run test:stack",

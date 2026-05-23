@@ -6,6 +6,9 @@
  *   npm run verify:setup
  */
 import { createClient } from "@supabase/supabase-js";
+import { loadEnvLocal } from "@/lib/env/load-local";
+
+loadEnvLocal();
 
 type Check = { name: string; ok: boolean; detail: string };
 
