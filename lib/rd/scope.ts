@@ -1,6 +1,26 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { RdProjectRow } from "./types";
 
+export async function getProjectByScopeKey(supabase: SupabaseClient, scopeKey: string) {
+  const { data: scope, error: scopeError } = await supabase
+    .from("resource_scopes")
+    .select("id")
+    .eq("key", scopeKey)
+    .maybeSingle();
+
+  if (scopeError) throw scopeError;
+  if (!scope) return null;
+
+  const { data: project, error: projectError } = await supabase
+    .from("rd_projects")
+    .select("id, title, technical_uncertainty, objective, scope_id")
+    .eq("scope_id", scope.id)
+    .maybeSingle();
+
+  if (projectError) throw projectError;
+  return project;
+}
+
 export async function getScopeKeyForProject(supabase: SupabaseClient, rdProjectId: number) {
   const { data, error } = await supabase
     .from("rd_projects")

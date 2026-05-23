@@ -74,7 +74,9 @@ curl -X POST https://your-console.vercel.app/api/rd-evidence \
   }'
 ```
 
-Or use the **Log evidence** form on `/rd-projects` (server action → RLS + audit trigger).
+Or use the **Log evidence** form on `/rd-projects` (server action `createRDEvidence` → RLS + audit trigger).
+
+View structured monthly packs at `/rd-projects/monthly?scope=wcs-platform-rd-2026&year=2026&month=5` (server action `exportMonthlyRDEvidence`).
 
 Or SQL:
 
