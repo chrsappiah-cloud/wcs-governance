@@ -1,4 +1,12 @@
 import type { NextConfig } from "next";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const nextConfig: NextConfig = { reactStrictMode: true };
+const root = path.dirname(fileURLToPath(import.meta.url));
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  outputFileTracingRoot: root,
+};
+
 export default nextConfig;

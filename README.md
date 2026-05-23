@@ -2,53 +2,74 @@
 
 Founder-controlled governance for World Class Scholars: Supabase RBAC + RLS, App Router console, R&D evidence, and grant-ready reporting.
 
-**Live repos:** [wcs-governance](https://github.com/chrsappiah-cloud/wcs-governance) (this repo) · [wcs-full](https://github.com/chrsappiah-cloud/wcs-full) (marketing site)
+**Repo:** [chrsappiah-cloud/wcs-governance](https://github.com/chrsappiah-cloud/wcs-governance) · **Marketing site:** [wcs-full](https://github.com/chrsappiah-cloud/wcs-full)
+
+## Go-live checklist
+
+| Step | Status | Action |
+|------|--------|--------|
+| 1. Wire Supabase | **Code ready** | Copy `.env.example` → `.env.local`, add URL + keys |
+| 2. Apply schema | **SQL ready** | Run `supabase/migrations/001` → `004` in Supabase |
+| 3. Seed founder | **SQL ready** | Sign up at `/login`, run `supabase/seed-founder.sql` |
+| 4. Console routes | **Done** | `(auth)/login`, `(console)/*`, `requireStaff`, `requirePermission` |
+| 5. R&D evidence | **Done** | `createRDEvidence` on `/rd-projects` — test after step 3 |
+| 6. GitHub reports | **Done** | `npm run export:rd`, workflow `rd-report.yml` |
+| 7. Architecture doc | **Done** | `docs/governance/architecture.md` + PDF export |
+
+Verify after steps 1–3:
+
+```bash
+npm run verify:setup    # checks env, schema, founder assignment
+curl localhost:3000/api/health   # after npm run dev
+```
 
 ## Quick start
 
 ```bash
 cp .env.example .env.local   # set Supabase URL + keys
 npm install
-npm run dev
+npm run verify:setup           # confirm schema + founder
+npm run dev                    # http://localhost:3000/login
 ```
 
-Apply SQL migrations in `supabase/migrations/` (001 → 004), enable the custom access token hook, then seed founder via `supabase/seed-founder.sql`.
+**Supabase dashboard (one-time):**
+
+1. SQL Editor → run migrations `001` through `004` in order
+2. Auth → Hooks → enable `public.custom_access_token_hook`
+3. After sign-up → run `supabase/seed-founder.sql`
+4. Sign out and back in (refreshes JWT claims)
+
+**Vercel:** connect this repo, set the three env vars, deploy.
+
+**GitHub secrets** (for automated R&D export): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
 
 ## Structure
 
 ```
-app/(marketing)/     Public site (gradual port from wcs-full)
-app/(auth)/          Staff login
-app/(console)/       Governance console + server actions
+app/(marketing)/     Public site
+app/(auth)/login/    Staff sign-in
+app/(console)/       Dashboard, access, rd-projects, grants, audit
+lib/supabase/        getServerSupabase() (@supabase/ssr)
 lib/auth/            requireStaff, requirePermission
-lib/supabase/        SSR client (@supabase/ssr)
-supabase/migrations/ Versioned RBAC/RLS schema
-docs/governance/     Architecture and roles reference
-docs/rd-evidence/    Generated monthly R&D Markdown packs
-scripts/             CLI export tooling
+supabase/migrations/ RBAC + RLS + audit (001–004)
+docs/governance/     Architecture + roles (PDF in exports/)
+docs/rd-evidence/    Generated monthly Markdown/PDF packs
+scripts/             export-rd-report, export-markdown-pdf, verify-setup
 ```
-
-## Documentation
-
-- [Governance architecture](docs/governance/architecture.md) — formal overview for grant and investor audiences
-- [Roles and scopes](docs/governance/roles-and-scopes.md)
-- [R&D evidence exports](docs/rd-evidence/README.md)
-- [Integration with wcs-full](docs/INTEGRATION.md)
-
-## Export R&D evidence to Git
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
-  npm run export:rd -- wcs-platform-rd-2026 2026 5
-```
-
-GitHub Actions (`.github/workflows/rd-report.yml`) can run this monthly and commit to `docs/rd-evidence/`.
 
 ## Scripts
 
 | Command | Purpose |
 |---------|---------|
 | `npm run dev` | Local console |
-| `npm run typecheck` | TypeScript check |
-| `npm run export:pdf -- governance` | PDF exports of governance docs |
-| `npm run export:pdf -- rd-evidence` | PDF exports of R&D Markdown packs |
+| `npm run build` | Production build |
+| `npm run verify:setup` | Validate Supabase env + schema + founder |
+| `npm run export:rd -- <scope> <year> <month>` | Markdown → `docs/rd-evidence/` |
+| `npm run export:governance-pdf` | PDF → `docs/governance/exports/` |
+
+## Documentation
+
+- [Governance architecture](docs/governance/architecture.md) (+ [PDF](docs/governance/exports/architecture.pdf))
+- [Roles and scopes](docs/governance/roles-and-scopes.md)
+- [R&D evidence exports](docs/rd-evidence/README.md)
+- [Integration with wcs-full](docs/INTEGRATION.md)

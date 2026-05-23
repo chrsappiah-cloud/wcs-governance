@@ -11,6 +11,7 @@
     "export:pdf": "tsx scripts/export-markdown-pdf.ts",
     "export:governance-pdf": "tsx scripts/export-markdown-pdf.ts governance",
     "prepare:pdf": "npx puppeteer browsers install chrome",
+    "verify:setup": "tsx scripts/verify-setup.ts",
     "db:seed-founder": "echo 'Run supabase/seed-founder.sql in Supabase SQL editor after migrations'"
   },
   "dependencies": {
