@@ -17,3 +17,35 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run test:unit
+
+  stack-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start &
+      - run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/api/health && exit 0
+            sleep 2
+          done
+          exit 1
+      - run: npm run test:stack
+        env:
+          TEST_BASE_URL: http://localhost:3000

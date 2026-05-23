@@ -7,6 +7,7 @@ const NAV = [
   { href: "/rd-projects", label: "R&D Projects" },
   { href: "/grants", label: "Grants" },
   { href: "/audit", label: "Audit" },
+  { href: "/system", label: "System" },
 ];
 
 export default async function ConsoleLayout({ children }: { children: React.ReactNode }) {

@@ -54,3 +54,8 @@ a { color: inherit; text-decoration: none; }
 .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .evidence-row { border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
 .text-red-600 { color: #f87171; }
+.status-pass { border-color: #22c55e; color: #86efac; }
+.status-fail { border-color: #ef4444; color: #fca5a5; }
+.status-warn { border-color: #eab308; color: #fde047; }
+.status-skip { border-color: var(--border); color: var(--muted); }
+code { font-family: ui-monospace, monospace; font-size: 0.85em; }

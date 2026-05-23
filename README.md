@@ -20,7 +20,9 @@ Verify after steps 1–3:
 
 ```bash
 npm run verify:setup    # checks env, schema, founder assignment
-curl localhost:3000/api/health   # after npm run dev
+npm run test:unit       # lib unit tests
+npm run dev             # then: npm run test:stack
+open http://localhost:3000/system   # full diagnostics UI (after login)
 ```
 
 ## Quick start
@@ -64,6 +66,9 @@ scripts/             export-rd-report, export-markdown-pdf, verify-setup
 | `npm run dev` | Local console |
 | `npm run build` | Production build |
 | `npm run verify:setup` | Validate Supabase env + schema + founder |
+| `npm run test:unit` | Unit tests (lib/rd, registry) |
+| `npm run test:stack` | HTTP probes (requires `npm run dev`) |
+| `npm run test` | Unit + stack tests |
 | `npm run export:rd -- <scope> <year> <month>` | Markdown → `docs/rd-evidence/` |
 | `npm run export:governance-pdf` | PDF → `docs/governance/exports/` |
 
