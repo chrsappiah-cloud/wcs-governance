@@ -19,17 +19,24 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Supabase → Firestore sync
-        if: env.FIREBASE_SERVICE_ACCOUNT_JSON != '' && env.SUPABASE_SERVICE_ROLE_KEY != ''
         env:
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npm run backup:firebase
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT_JSON" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Backup secrets not configured — skipping"
+            exit 0
+          fi
+          npm run backup:firebase
       - name: Deploy docs hosting backup
-        if: env.FIREBASE_SERVICE_ACCOUNT_JSON != ''
         env:
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
         run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "Firebase secret not configured — skipping hosting deploy"
+            exit 0
+          fi
           echo "$FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-sa.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/firebase-sa.json"
           npx firebase-tools deploy --only hosting,firestore:rules --non-interactive

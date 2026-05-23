@@ -80,33 +80,39 @@ jobs:
       - run: npm run build
 
       - name: Deploy to Vercel (primary)
-        if: ${{ secrets.VERCEL_TOKEN != '' }}
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "Set VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID secrets to enable CD deploy"
+            exit 0
+          fi
           npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
           npx vercel build --prod --token="$VERCEL_TOKEN"
           npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
 
-      - name: Vercel skipped
-        if: ${{ secrets.VERCEL_TOKEN == '' }}
-        run: echo "Set VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID secrets to enable CD deploy"
-
       - name: Deploy Firebase rules + docs hosting (backup)
-        if: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON != '' }}
         env:
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
         run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "Set FIREBASE_SERVICE_ACCOUNT_JSON secret to enable Firebase deploy"
+            exit 0
+          fi
           echo "$FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-sa.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/firebase-sa.json"
           npx firebase-tools deploy --only firestore:rules,hosting --non-interactive
 
       - name: Sync Supabase → Firestore backup
-        if: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
         env:
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npm run backup:firebase
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT_JSON" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Set FIREBASE_SERVICE_ACCOUNT_JSON and SUPABASE_SERVICE_ROLE_KEY to enable backup sync"
+            exit 0
+          fi
+          npm run backup:firebase
