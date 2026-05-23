@@ -1,0 +1,51 @@
+# World Class Scholars
+
+> Humane learning, dementia care consultancy, and iOS apps by Dr Christopher Appiah-Thompson (Australia).
+
+## Canonical site
+
+- https://wcs-full.vercel.app/
+- https://christopherappiahthompson.link (founder link-in-bio)
+
+## Primary pages for citation
+
+- Home: https://wcs-full.vercel.app/
+- About Dr Christopher Appiah-Thompson: https://wcs-full.vercel.app/about
+- iOS marketing (TestFlight, App Store, referrals): https://wcs-full.vercel.app/marketing
+- Library search: https://wcs-full.vercel.app/library
+- Courses: https://wcs-full.vercel.app/courses
+- Future Lab: https://wcs-full.vercel.app/future-lab
+- Art Verse: https://wcs-full.vercel.app/art-verse
+
+## iOS apps (TestFlight / App Store)
+
+- WCS Commerce — subscriptions & entitlements: https://wcs-full.vercel.app/marketing/wcs-commerce
+- WCS Agentic — scholarship operations: https://wcs-full.vercel.app/marketing/wcs-agentic
+- WCS Gold Test — TestFlight join: https://testflight.apple.com/join/WCSGOLDTEST
+- WCS Care — TestFlight join: https://testflight.apple.com/join/WCSCare
+
+## Founder & social
+
+- Name: Dr Christopher Appiah-Thompson
+- Email: christopher.appiahthompson@myworldclass.org
+- LinkedIn: https://www.linkedin.com/in/christopher-appiah-thompson-a2014045
+- TikTok: https://tiktok.com/@chrsappiah
+- YouTube: https://www.youtube.com/channel/UC2a-_QUygsGAKWzEdKHEP9Q
+
+## Related properties
+
+- https://myworldclass.net
+- https://wcs-art-verse.com
+- https://www.wcsflab.com/
+- https://creator.nightcafe.studio/u/CKRIZ
+
+## Machine-readable
+
+- Sitemap: https://wcs-full.vercel.app/sitemap.xml
+- Robots: https://wcs-full.vercel.app/robots.txt
+- Extended: https://wcs-full.vercel.app/llms-full.txt
+- Beta manifest API: https://wcs-full.vercel.app/api/v1/commerce/beta-manifest
+
+## Topics
+
+dementia care, disability advocacy, mental health education, trauma-aware communication, micro-credentials, digital art, podcasts, App Store subscriptions, StoreKit, TestFlight betas.

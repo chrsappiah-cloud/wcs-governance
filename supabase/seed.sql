@@ -1,0 +1,17 @@
+-- Post-migration seed helpers (run after auth users exist)
+--
+-- 1. Bootstrap founder (service role / SQL editor):
+--    select public.bootstrap_founder('<founder-user-uuid>');
+--
+-- 2. Assign test delegates:
+--    select public.assign_role_for_scope(
+--      '<content-manager-uuid>', 'content_manager', 'website-main', '<founder-uuid>'
+--    );
+--    select public.assign_role_for_scope(
+--      '<engineer-uuid>', 'engineer', 'etherealveil-rd-2026', '<founder-uuid>'
+--    );
+--    select public.assign_role_for_scope(
+--      '<rd-coordinator-uuid>', 'rd_coordinator', 'etherealveil-rd-2026', '<founder-uuid>'
+--    );
+--
+-- 3. Re-authenticate test users so JWT claims refresh (is_staff, org_role).
