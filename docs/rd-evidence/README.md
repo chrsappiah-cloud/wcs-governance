@@ -50,6 +50,22 @@ Staff with `export_evidence_pack` permission can preview packs at:
 
 Console exports do not write to Git; use the CLI or GitHub Action for versioned reports in this folder.
 
+## PDF exports
+
+After generating Markdown, convert to PDF for grant acquittals:
+
+```bash
+npm run export:pdf -- rd-evidence
+```
+
+Or export a single file:
+
+```bash
+npm run export:pdf -- docs/rd-evidence/wcs-platform-rd-2026-2026-05.md
+```
+
+Governance architecture PDF: `npm run export:governance-pdf` → `docs/governance/exports/architecture.pdf`
+
 ## Record-keeping expectations
 
 Each pack includes:

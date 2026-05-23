@@ -1,0 +1,82 @@
+name: Governance & Evidence PDF Export
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: What to export
+        type: choice
+        options:
+          - governance
+          - rd-evidence
+          - all
+        default: governance
+      commit:
+        description: Commit PDFs to main
+        type: boolean
+        default: true
+  release:
+    types: [published]
+  push:
+    branches: [main]
+    paths:
+      - docs/governance/**/*.md
+      - docs/rd-evidence/**/*.md
+      - lib/export/**
+      - scripts/export-markdown-pdf.ts
+
+permissions:
+  contents: write
+
+jobs:
+  export-pdf:
+    runs-on: ubuntu-latest
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Chromium for PDF rendering
+        run: npx puppeteer browsers install chrome
+
+      - name: Export PDFs
+        run: |
+          TARGET="${{ github.event.inputs.target || 'governance' }}"
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TARGET="all"
+          fi
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TARGET="all"
+          fi
+          npm run export:pdf -- "$TARGET"
+
+      - name: Upload PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wcs-governance-pdfs
+          path: |
+            docs/governance/exports/*.pdf
+            docs/rd-evidence/*.pdf
+
+      - name: Commit PDFs to repository
+        if: >-
+          github.event_name == 'release' ||
+          github.event_name == 'push' ||
+          github.event.inputs.commit == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/governance/exports/*.pdf docs/rd-evidence/*.pdf 2>/dev/null || true
+          git diff --staged --quiet && echo "No PDF changes to commit" && exit 0
+          git commit -m "docs: regenerate governance and evidence PDF exports"
+          git push

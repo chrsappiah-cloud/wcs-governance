@@ -1,0 +1,69 @@
+/* Print styles for governance and R&D evidence PDF exports */
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11pt;
+  line-height: 1.55;
+  color: #111;
+  max-width: 720px;
+  margin: 2rem auto;
+}
+
+h1 {
+  font-size: 20pt;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.35rem;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 14pt;
+  margin-top: 1.5rem;
+}
+
+h3 {
+  font-size: 12pt;
+}
+
+code,
+pre {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9pt;
+}
+
+pre {
+  background: #f6f6f6;
+  padding: 0.75rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 10pt;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
+blockquote {
+  border-left: 3px solid #ccc;
+  margin-left: 0;
+  padding-left: 1rem;
+  color: #444;
+}
+
+@media print {
+  body {
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

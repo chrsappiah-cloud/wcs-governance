@@ -50,4 +50,5 @@ GitHub Actions (`.github/workflows/rd-report.yml`) can run this monthly and comm
 |---------|---------|
 | `npm run dev` | Local console |
 | `npm run typecheck` | TypeScript check |
-| `npm run export:rd -- <scope> <year> <month>` | Write Markdown report to `docs/rd-evidence/` |
+| `npm run export:pdf -- governance` | PDF exports of governance docs |
+| `npm run export:pdf -- rd-evidence` | PDF exports of R&D Markdown packs |

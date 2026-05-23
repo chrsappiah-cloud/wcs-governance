@@ -141,6 +141,7 @@ Documentation and reports are integrated with the WCS GitHub repos as follows:
 - Governance SQL migrations and Next.js console code are stored and versioned in the main WCS repository under `supabase/migrations` and `app/(console)` respectively.
 - R&D evidence packs are generated from Supabase data using a Node.js/TypeScript script that queries the database and writes Markdown files into `docs/rd-evidence`, which are then committed to Git.
 - GitHub Actions workflows automate periodic evidence export, producing CI artifacts and commits with updated documentation.
+- **PDF exports** of governance architecture and R&D evidence packs are generated via `npm run export:pdf` and stored under `docs/governance/exports/` and `docs/rd-evidence/` for acquittal attachments and external review.
 
 This approach ensures that governance configuration, operational logs, and R&D evidence are treated as code and documents within source control, improving reproducibility and audit readiness.
 
