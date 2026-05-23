@@ -1,15 +1,13 @@
+import { SiteFooter } from "@/components/marketing/site-footer";
+import { SiteHeader } from "@/components/marketing/site-header";
+import "./marketing.css";
+
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <header style={{ display: "flex", justifyContent: "space-between", padding: "1rem 2rem", borderBottom: "1px solid var(--border)" }}>
-        <strong>World Class Scholars</strong>
-        <nav style={{ display: "flex", gap: "1rem" }}>
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/login">Staff login</a>
-        </nav>
-      </header>
-      <main>{children}</main>
-    </>
+    <div className="app-shell">
+      <SiteHeader />
+      <main className="main">{children}</main>
+      <SiteFooter />
+    </div>
   );
 }

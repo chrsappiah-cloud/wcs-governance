@@ -103,10 +103,11 @@ export async function backupGovernanceToFirebase(): Promise<BackupResult> {
 }
 
 export async function getFirebaseBackupStatus() {
-  const db = getFirestoreDb();
   if (!isFirebaseConfigured()) {
     return { configured: false, last_backup_at: null, last_snapshot_id: null };
   }
+
+  const db = getFirestoreDb();
   if (!db) {
     return { configured: true, available: false, last_backup_at: null, last_snapshot_id: null };
   }

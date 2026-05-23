@@ -1,10 +1,21 @@
 import { NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+
 import { requirePermission, ForbiddenError } from "@/lib/auth/requirePermission";
 import { backupGovernanceToFirebase, getFirebaseBackupStatus } from "@/lib/firebase/backup";
 
 export async function GET() {
-  const status = await getFirebaseBackupStatus();
-  return NextResponse.json({ backup: status });
+  try {
+    const { getFirebaseBackupStatus } = await import("@/lib/firebase/backup");
+    const status = await getFirebaseBackupStatus();
+    return NextResponse.json({ backup: status });
+  } catch (e) {
+    return NextResponse.json(
+      { backup: { configured: false, error: e instanceof Error ? e.message : "unavailable" } },
+      { status: 200 }
+    );
+  }
 }
 
 export async function POST() {

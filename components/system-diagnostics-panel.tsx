@@ -8,6 +8,7 @@ const LAYERS = ["frontend", "middleware", "backend", "database", "auth"] as cons
 const API_ENDPOINTS = [
   { path: "/api/health", method: "GET", auth: false },
   { path: "/api/system/diagnostics", method: "GET", auth: false },
+  { path: "/api/backup/firebase", method: "GET", auth: false },
   { path: "/api/audit", method: "GET", auth: true },
   { path: "/api/approvals", method: "GET", auth: true },
   { path: "/api/rd-evidence", method: "GET", auth: true },
