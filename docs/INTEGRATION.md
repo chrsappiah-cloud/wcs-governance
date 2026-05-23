@@ -119,7 +119,19 @@ Optional Vercel rewrite during transition (preview only):
 | `supabase/migrations/*` | Schema + RLS + triggers |
 | `middleware.ts` | Console route protection |
 | `app/(console)/*` | Governance UI |
-| `docs/role-matrix.md` | Role / permission reference |
+| `docs/governance/*` | Architecture and roles reference |
+| `docs/rd-evidence/*` | Generated monthly R&D Markdown packs |
+| `scripts/export-rd-report.ts` | CLI export to `docs/rd-evidence/` |
+
+## R&D evidence in Git
+
+Export monthly packs locally or via GitHub Actions:
+
+```bash
+npm run export:rd -- wcs-platform-rd-2026 2026 5
+```
+
+See [docs/rd-evidence/README.md](./rd-evidence/README.md) and [docs/governance/architecture.md](./governance/architecture.md).
 
 ## Local dev
 

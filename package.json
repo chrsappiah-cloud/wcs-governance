@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "export:rd": "tsx scripts/export-rd-report.ts",
     "db:seed-founder": "echo 'Run supabase/seed-founder.sql in Supabase SQL editor after migrations'"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
 }

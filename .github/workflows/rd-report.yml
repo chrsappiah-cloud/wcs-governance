@@ -1,0 +1,84 @@
+name: R&D Evidence Export
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Scope key
+        required: true
+        default: wcs-platform-rd-2026
+      year:
+        description: Year (YYYY)
+        required: false
+      month:
+        description: Month (1-12)
+        required: false
+      commit:
+        description: Commit report to main
+        type: boolean
+        default: true
+  schedule:
+  - cron: "0 3 1 * *"
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Resolve period
+        id: period
+        run: |
+          if [ -n "${{ github.event.inputs.year }}" ] && [ -n "${{ github.event.inputs.month }}" ]; then
+            echo "year=${{ github.event.inputs.year }}" >> "$GITHUB_OUTPUT"
+            echo "month=${{ github.event.inputs.month }}" >> "$GITHUB_OUTPUT"
+          else
+            YEAR=$(date -u -d "1 month ago" +%Y)
+            MONTH=$(date -u -d "1 month ago" +%-m)
+            echo "year=$YEAR" >> "$GITHUB_OUTPUT"
+            echo "month=$MONTH" >> "$GITHUB_OUTPUT"
+          fi
+          SCOPE="${{ github.event.inputs.scope || 'wcs-platform-rd-2026' }}"
+          echo "scope=$SCOPE" >> "$GITHUB_OUTPUT"
+
+      - name: Export R&D evidence
+        run: |
+          npm run export:rd -- \
+            "${{ steps.period.outputs.scope }}" \
+            "${{ steps.period.outputs.year }}" \
+            "${{ steps.period.outputs.month }}"
+
+      - name: Upload R&D report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rd-evidence-${{ steps.period.outputs.scope }}-${{ steps.period.outputs.year }}-${{ steps.period.outputs.month }}
+          path: docs/rd-evidence/
+
+      - name: Commit report to repository
+        if: >-
+          github.event_name == 'schedule' ||
+          github.event.inputs.commit == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/rd-evidence/
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          MONTH_PAD=$(printf '%02d' "${{ steps.period.outputs.month }}")
+          git commit -m "docs(rd): export evidence pack for ${{ steps.period.outputs.scope }} (${{ steps.period.outputs.year }}-${MONTH_PAD})"
+          git push
