@@ -30,7 +30,7 @@ scripts/             CLI export tooling
 
 ## Documentation
 
-- [Governance architecture](docs/governance/architecture.md)
+- [Governance architecture](docs/governance/architecture.md) — formal overview for grant and investor audiences
 - [Roles and scopes](docs/governance/roles-and-scopes.md)
 - [R&D evidence exports](docs/rd-evidence/README.md)
 - [Integration with wcs-full](docs/INTEGRATION.md)
