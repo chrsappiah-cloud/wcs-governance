@@ -239,6 +239,36 @@ describe("Database connectivity", () => {
   });
 });
 
+describe("Backup API endpoints", () => {
+  async function postStatus(path: string) {
+    const res = await fetch(`${BASE}${path}`, { method: "POST", redirect: "manual" });
+    return { status: res.status, location: res.headers.get("location") ?? "" };
+  }
+
+  it("POST /api/backup/cloudflare returns 403 or redirect (unauthenticated)", async () => {
+    const { status, location } = await postStatus("/api/backup/cloudflare");
+    const ok = status === 403 || status === 307 || status === 308;
+    assert.ok(ok, `expected 403 or redirect, got ${status}`);
+  });
+
+  it("POST /api/backup/icloud returns 403 or redirect (unauthenticated)", async () => {
+    const { status, location } = await postStatus("/api/backup/icloud");
+    const ok = status === 403 || status === 307 || status === 308;
+    assert.ok(ok, `expected 403 or redirect, got ${status}`);
+  });
+
+  it("POST /api/backup/cloudkit returns 403 or redirect (unauthenticated)", async () => {
+    const { status, location } = await postStatus("/api/backup/cloudkit");
+    const ok = status === 403 || status === 307 || status === 308;
+    assert.ok(ok, `expected 403 or redirect, got ${status}`);
+  });
+
+  it("GET /api/health still works after backup endpoints registered", async () => {
+    const { status } = await fetchText("/api/health");
+    assert.equal(status, 200);
+  });
+});
+
 describe("Console pages return proper HTTP statuses", () => {
   // These should all redirect to login since unauthenticated
   const consolePaths = [

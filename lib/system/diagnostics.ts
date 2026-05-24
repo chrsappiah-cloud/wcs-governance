@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient, getServerSupabase } from "@/lib/supabase/server";
 import { isFirebaseConfigured } from "@/lib/firebase/admin";
 import { getFirebaseBackupStatus } from "@/lib/firebase/backup";
+import { isR2Configured } from "@/lib/backup/cloudflare";
 import {
   ALL_STATIC_UNITS,
   type StaticUnit,
@@ -267,6 +268,17 @@ export async function runDiagnostics(): Promise<DiagnosticsReport> {
       });
     }
   }
+
+  // --- Cloudflare R2 backup ---
+  const r2 = isR2Configured();
+  results.push({
+    id: "cloudflare-r2-configured",
+    layer: "backend",
+    name: "Cloudflare R2",
+    path: "CLOUDFLARE_R2_*",
+    status: r2 ? "pass" : "warn",
+    detail: r2 ? "configured" : "not set — R2 backups disabled",
+  });
 
   // --- Static registry (code present) ---
   for (const unit of ALL_STATIC_UNITS) {

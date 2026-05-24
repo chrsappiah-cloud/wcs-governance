@@ -1,0 +1,47 @@
+name: Multi-target governance backup
+
+on:
+  schedule:
+  - cron: "0 5 * * *"
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: Comma-separated backup targets (firebase,cloudflare,icloud,cloudkit,all)
+        default: all
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+      CLOUDFLARE_R2_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}
+      CLOUDFLARE_R2_SECRET_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
+      CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+        cache: npm
+
+    - run: npm ci
+
+    - name: Run all backups
+      id: backup
+      run: |
+        npm run backup:all 2>&1 | tee /tmp/backup.log
+        tail -2 /tmp/backup.log | grep -q "0 failed" && echo "status=pass" >> "$GITHUB_OUTPUT" || echo "status=fail" >> "$GITHUB_OUTPUT"
+
+    - name: Upload backup artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: governance-backup-log
+        path: /tmp/backup.log

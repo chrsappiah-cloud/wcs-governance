@@ -49,6 +49,9 @@ export const BACKEND_ROUTES: StaticUnit[] = [
   { id: "api-rd-evidence", layer: "backend", name: "R&D evidence API", path: "/api/rd-evidence", description: "GET/POST evidence records" },
   { id: "api-export-rd", layer: "backend", name: "Export R&D pack", path: "/api/export-rd-pack", description: "POST evidence pack JSON" },
   { id: "api-firebase-backup", layer: "backend", name: "Firebase backup", path: "/api/backup/firebase", description: "GET status / POST Supabase→Firestore sync" },
+  { id: "api-cloudflare-r2-backup", layer: "backend", name: "Cloudflare R2 backup", path: "/api/backup/cloudflare", description: "POST Supabase→R2 governance snapshot" },
+  { id: "api-icloud-export", layer: "backend", name: "iCloud export", path: "/api/backup/icloud", description: "POST structured export for iCloud Drive" },
+  { id: "api-cloudkit-export", layer: "backend", name: "CloudKit export", path: "/api/backup/cloudkit", description: "POST CloudKit-compatible record export" },
 ];
 
 export const DATABASE_TABLES: StaticUnit[] = [
