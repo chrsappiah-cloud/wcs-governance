@@ -2,10 +2,12 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const CONSOLE = ["/dashboard", "/access", "/content", "/ios-releases", "/rd-projects", "/grants", "/audit", "/settings", "/system", "/governance"];
+const STUDENT_ROUTES = ["/student/dashboard"];
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isConsole = CONSOLE.some((p) => path === p || path.startsWith(`${p}/`));
+  const isStudentRoute = STUDENT_ROUTES.some((p) => path === p || path.startsWith(`${p}/`));
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -43,9 +45,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
+  if (isStudentRoute && !user) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/student-login";
+    redirectUrl.searchParams.set("next", path);
+    return NextResponse.redirect(redirectUrl);
+  }
+
   if (path === "/login" && user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/dashboard";
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (path === "/student-login" && user) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/student/dashboard";
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -64,6 +79,9 @@ export const config = {
     "/settings/:path*",
     "/system/:path*",
     "/governance/:path*",
+    "/student-login",
+    "/student/dashboard/:path*",
+    "/admin/students/:path*",
     "/login",
   ],
 };

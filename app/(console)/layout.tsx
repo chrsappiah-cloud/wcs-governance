@@ -30,6 +30,9 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
           {isAdminOrFounder && (
             <Link href={ADMIN_ONLY}>Governance</Link>
           )}
+          {role === "founder_admin" && (
+            <Link href="/admin/students">Students</Link>
+          )}
         </nav>
         <p className="muted" style={{ marginTop: "1.5rem", fontSize: "0.75rem" }}>
           Role: {String(claims.org_role ?? "staff")}

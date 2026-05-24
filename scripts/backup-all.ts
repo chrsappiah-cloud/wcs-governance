@@ -1,12 +1,13 @@
 import { loadEnvLocal } from "../lib/env/load-local";
 loadEnvLocal();
 
-import { backupGovernanceToR2, isR2Configured } from "../lib/backup/cloudflare";
+import { backupGovernanceToR2 } from "../lib/backup/cloudflare";
 import { exportForIcloud } from "../lib/backup/icloud";
 import { exportForCloudkit } from "../lib/backup/cloudkit";
 import { backupGovernanceToFirebase } from "../lib/firebase/backup";
 
-async function run(label: string, fn: () => Promise<{ ok: boolean; target: string; snapshotId?: string }>) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function run(label: string, fn: () => Promise<any>) {
   process.stdout.write(`${label}... `);
   try {
     const result = await fn();
