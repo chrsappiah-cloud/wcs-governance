@@ -14,8 +14,10 @@
     "verify:setup": "tsx scripts/verify-setup.ts",
     "go-live": "tsx scripts/go-live.ts",
     "test:unit": "node --import tsx --test tests/unit/*.test.ts",
+    "test:e2e": "node --import tsx --test tests/e2e.test.ts",
     "test:stack": "tsx scripts/test-stack.ts",
     "test": "npm run test:unit && npm run test:stack",
+    "test:all": "npm run test:unit && npm run test:stack && npm run test:e2e",
     "backup:firebase": "tsx scripts/backup-to-firebase.ts",
     "db:seed-founder": "echo 'Run supabase/seed-founder.sql in Supabase SQL editor after migrations'"
   },

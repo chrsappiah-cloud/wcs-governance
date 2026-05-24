@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const CONSOLE = ["/dashboard", "/access", "/content", "/ios-releases", "/rd-projects", "/grants", "/audit", "/settings", "/system"];
+const CONSOLE = ["/dashboard", "/access", "/content", "/ios-releases", "/rd-projects", "/grants", "/audit", "/settings", "/system", "/governance"];
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
@@ -63,6 +63,7 @@ export const config = {
     "/audit/:path*",
     "/settings/:path*",
     "/system/:path*",
+    "/governance/:path*",
     "/login",
   ],
 };

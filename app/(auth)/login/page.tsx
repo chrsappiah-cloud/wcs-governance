@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoginForm } from "@/components/login-form";
+
+export const metadata: Metadata = {
+  title: "Staff Sign In — World Class Scholars Governance",
+  description: "Staff governance console sign-in for World Class Scholars. Authorised personnel only.",
+  robots: { index: false, follow: false },
+};
 
 function LoginNotice({ error }: { error?: string }) {
   if (error === "supabase_not_configured") {

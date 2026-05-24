@@ -36,11 +36,59 @@ export const podcasts = [
   { label: "Art, Culture and Philosophies of Tattoos", url: "https://rss.com/podcasts/art-culture-and-philosophies-of-tattoos" },
 ];
 
-export const iosApps = [
-  { slug: "wcs-commerce", name: "WCS Commerce" },
-  { slug: "wcs-agentic", name: "WCS Agentic" },
-  { slug: "wcs-goldtest", name: "WCS Gold Test" },
-  { slug: "wcs-care", name: "WCS Care" },
+export type IosApp = {
+  slug: string;
+  name: string;
+  subtitle: string;
+  description: string;
+  accent: string;
+  appStoreId?: string;
+  testflightUrl?: string;
+  features: string[];
+  category: "care" | "assessment" | "learning" | "utility";
+};
+
+export const iosApps: IosApp[] = [
+  {
+    slug: "wcs-care",
+    name: "WCS Care",
+    subtitle: "Dementia & disability care companion",
+    description:
+      "Evidence-informed strategies, daily reflection prompts, and personalised care plans for family carers and support workers in dementia and disability care.",
+    accent: "#4f98a3",
+    features: ["Daily care reflections", "Personalised care plans", "Crisis quick-reference guides", "Multi-carer sync"],
+    category: "care",
+  },
+  {
+    slug: "wcs-goldtest",
+    name: "WCS Gold Test",
+    subtitle: "Aged care quality assessor",
+    description:
+      "Audit-ready checklists, compliance tracking, and quality indicator scoring for aged care providers preparing for ACQSC review and the Aged Care Quality Standards.",
+    accent: "#c9952c",
+    features: ["ACQSC-ready checklists", "Quality indicator dashboards", "Evidence attachment", "PDF export"],
+    category: "assessment",
+  },
+  {
+    slug: "wcs-agentic",
+    name: "WCS Agentic",
+    subtitle: "AI tutor & exam prep",
+    description:
+      "AI-powered tutoring, adaptive quizzes, and exam preparation for care workers pursuing micro-credentials and CHC/HLT qualification upgrades.",
+    accent: "#7c5cbf",
+    features: ["Adaptive AI tutoring", "CHC/HLT exam prep", "Micro-credential pathways", "Progress analytics"],
+    category: "learning",
+  },
+  {
+    slug: "wcs-commerce",
+    name: "WCS Commerce",
+    subtitle: "StoreKit subscriptions & in-app purchases",
+    description:
+      "Manage App Store subscriptions, in-app purchases, promotional offers, and customer referral links — the commerce backend powering all WCS iOS apps.",
+    accent: "#2a9d8f",
+    features: ["Subscription management", "Promotional offers", "Referral link tracking", "Receipt validation"],
+    category: "utility",
+  },
 ];
 
 export const aboutPillars = [

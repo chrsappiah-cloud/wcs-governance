@@ -10,8 +10,12 @@ const NAV = [
   { href: "/system", label: "System" },
 ];
 
+const ADMIN_ONLY = "/governance";
+
 export default async function ConsoleLayout({ children }: { children: React.ReactNode }) {
   const { claims } = await requireStaff();
+  const role = String(claims.org_role ?? "");
+  const isAdminOrFounder = role === "founder_admin" || role === "platform_admin";
 
   return (
     <div className="console-grid">
@@ -23,6 +27,9 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
               {item.label}
             </Link>
           ))}
+          {isAdminOrFounder && (
+            <Link href={ADMIN_ONLY}>Governance</Link>
+          )}
         </nav>
         <p className="muted" style={{ marginTop: "1.5rem", fontSize: "0.75rem" }}>
           Role: {String(claims.org_role ?? "staff")}

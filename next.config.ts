@@ -12,7 +12,6 @@ const legacySpaRoutes = [
   "courses",
   "future-lab",
   "art-verse",
-  "marketing",
   "podcasts",
   "digital-marketing",
   "digital-advertising",

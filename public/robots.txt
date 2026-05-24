@@ -1,4 +1,4 @@
-# World Class Scholars — https://wcs-full.vercel.app
+# World Class Scholars — https://worldclassscholars.vercel.app
 # Allow search engines and AI discovery crawlers
 
 User-agent: *
@@ -65,5 +65,5 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://wcs-full.vercel.app/sitemap.xml
-Host: wcs-full.vercel.app
+Sitemap: https://worldclassscholars.vercel.app/sitemap.xml
+Host: worldclassscholars.vercel.app

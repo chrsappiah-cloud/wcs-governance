@@ -1,8 +1,40 @@
+import type { Metadata } from "next";
 import { aboutPillars, founderProfile, socialChannels } from "@/lib/marketing/config";
+
+export const metadata: Metadata = {
+  title: "About — World Class Scholars | Dr Christopher Appiah-Thompson",
+  description:
+    "Learn about World Class Scholars — global consultancy in disability, mental health, and dementia care. Meet founder Dr Christopher Appiah-Thompson and explore our pillars: consultancy, education, and creative media.",
+  openGraph: {
+    title: "About World Class Scholars — Dr Christopher Appiah-Thompson",
+    description:
+      "Consultancy, education, and creative media for equity, dignity, and social justice in disability, mental health, and dementia care.",
+    url: "/about",
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Dr Christopher Appiah-Thompson",
+  jobTitle: "Founder, World Class Scholars",
+  url: "https://christopherappiahthompson.link",
+  image: "https://0.gravatar.com/avatar/d8bd3742b066b58641607204c431fb47b6b32016887ba1a7b95e91279d7562d3?size=512",
+  email: "christopher.appiahthompson@myworldclass.org",
+  sameAs: [
+    "https://www.linkedin.com/in/christopher-appiah-thompson-a2014045",
+    "https://tiktok.com/@chrsappiah",
+    "https://www.youtube.com/channel/UC2a-_QUygsGAKWzEdKHEP9Q",
+  ],
+};
 
 export default function AboutPage() {
   return (
     <section className="section">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
       <div className="container narrow">
         <div className="section-head">
           <h1>About World Class Scholars</h1>
